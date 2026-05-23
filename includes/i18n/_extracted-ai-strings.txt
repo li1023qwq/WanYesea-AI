@@ -1,0 +1,412 @@
+﻿%d comment queued for analysis.
+%d plugin or theme is requesting access to an AI connector.
+&larr; Back to List
+<strong>Core</strong>: Built into WordPress itself.
+<strong>Plugin</strong>: Registered by an active plugin.
+<strong>Theme</strong>: Registered by the active theme.
+A minimum of %d words is required to shorten the content.
+Abilities API Documentation
+Abilities are a standardized way for WordPress core, plugins, and themes to expose discrete units of functionality. Each ability has a name, optional input/output schemas, and can be invoked programmatically.
+Abilities Explorer
+Ability invoked successfully.
+Ability not found.
+Ability slug is required.
+Actions
+Additional AI-powered features.
+Additional context to use when generating an excerpt suggestion for the content. This can either be a string of additional context or can be a post ID that will then be used to get context from that post (if it exists). If no content is provided but a valid post ID is used here, the content from that post will be used.
+Additional context to use when generating title suggestions. This can either be a string of additional context or can be a post ID that will then be used to get context from that post (if it exists). If no content is provided but a valid post ID is used here, the content from that post will be used.
+Additional context to use when summarizing the content. This can either be a string of additional context or can be a post ID that will then be used to get context from that post (if it exists). If no content is provided but a valid post ID is used here, the content from that post will be used.
+Adds editorial suggestions to posts block-by-block, covering Accessibility, Readability, Grammar, and SEO. Requires an AI connector that includes support for text generation models.
+Admin Experiments
+AI
+AI Capabilities
+AI client is not available.
+AI plugin cannot run due to the following issues:
+AI Plugin initialization failed: %s
+AI Request Logging
+AI Request Logs
+AI settings page render function not found. Run npm run build:routes to generate build assets.
+AI Status
+AI-powered experiments for the block editor, including content generation and enhancement tools.
+AI-powered experiments for the WordPress admin area, including exploration and testing tools.
+AI-powered suggestions for post tags and categories based on content analysis. Requires an AI connector that includes support for text generation models.
+All Categories
+All Providers
+All Sentiments
+All Toxicities
+Alt Text
+Alt Text Generation
+Alt text generation failed. Please ensure you have a connected provider that supports both text generation and vision capabilities.
+An array of WP_Term objects assigned to the post.
+Analyze Sentiment and Toxicity
+Analyze this comment
+Analyzes a comment for toxicity and sentiment.
+Any additional context to help generate the prompt. This can either be a string of additional context or can be a post ID that will then be used to get context from that post (if it exists).
+Any additional style instructions to apply to the generated image.
+Applies pending editorial Notes to your content automatically. Requires an AI connector that includes support for text generation models.
+Are you sure you want to invoke this ability?
+Asset file for "%1$s" is invalid and cannot be registered.
+Asset file for "%1$s" is missing and cannot be registered.
+At least one note is required to perform refinement.
+Attachment alt text.
+Attachment description.
+Attachment filename.
+Attachment ID.
+Attachment title.
+Attachment URL.
+Attachment with ID %d not found.
+Attempted to register invalid feature. All features must implement the Feature interface.
+Attempted to register invalid feature. Default features must be class-strings.
+Automatically moderate comments based on toxicity detection and sentiment analysis. Requires an AI connector that includes support for text generation models.
+Base64 Image Import
+Block content is required to perform a review.
+Block content is required to perform refinement.
+Chat History
+Clear Result
+Click "Invoke Ability" to execute it and see the result.
+Click "Invoke Ability" to execute the ability with your input
+Click "Test" next to an ability in the list.
+Click "Validate Input" to check your JSON is correct
+Comment Analysis
+Comment analysis failed. Please ensure you have a connected provider that supports text generation.
+Comment ID is required.
+Comment Moderation
+Comment with ID %d not found.
+Complete these steps to get started with the AI plugin:
+Confidence score between 0 and 1.
+Configure an AI provider
+Connector Approval
+Connector Approvals
+Connectors
+Content Classification
+Content from this post will be used to generate taxonomy suggestions. This overrides the content parameter if both are provided.
+Content is required to generate a meta description.
+Content is required to generate a prompt.
+Content is required to generate a summary.
+Content is required to generate an excerpt suggestion.
+Content is required to generate taxonomy suggestions.
+Content is required to generate title suggestions.
+Content is required to resize.
+Content Resizing
+Content resizing failed. Please ensure you have a connected provider that supports text generation.
+Content Summarization
+Content to generate an excerpt suggestion for.
+Content to generate taxonomy suggestions for.
+Content to generate title suggestions for.
+Content to summarize.
+Control which plugins and themes are allowed to use each AI connector on this site. Prompts from unapproved callers are prevented and listed below for review.
+Copied!
+Copy
+Core
+Could not parse AI response as valid suggestions.
+Could not read the downloaded image file.
+Could not retrieve image URL from attachment.
+Current page of the collection.
+Cursor ID for cursor-based pagination (use with cursor_timestamp).
+Cursor timestamp for cursor-based pagination (use with cursor_id).
+Demonstrates the AI experiment system with example hooks and functionality.
+Description
+De-serializing instances of %s is not allowed.
+Details
+Discover, inspect, test, and document all abilities registered via the WordPress Abilities API.
+Dismiss
+Edit the JSON input below to test the ability. The input will be validated against the input schema if available.
+Edit the JSON input below with your test data
+Edit the pre-filled Input Data if the ability accepts JSON parameters.
+Editor Experiments
+Editorial Notes
+Editorial notes generation failed. Please ensure you have a connected provider that supports text generation.
+Editorial Updates
+Either attachment_id or image_url must be provided.
+Embedding Generation
+Enable a feature or experiment
+Ensure the alt text you return matches the language of the content in the <additional-context> tag.
+Ensure the alt text you return matches the language of this locale: %s.
+Error
+Error getting terms: %1$s
+Every ability is associated with a provider that indicates where it comes from:
+Example Experiment
+Example experiment is active!
+Excerpt Generation
+Excerpt generation failed. Please ensure you have a connected provider that supports text generation.
+Existing Note texts for this block from prior review runs, used to avoid repeating suggestions.
+Experiments
+Failed
+Failed to copy
+Failed to decode base64 image data.
+Failed to instantiate feature "%1$s": %2$s
+Failed to parse AI response.
+Failed to retrieve attachment data.
+Failed to write image data to temporary file.
+Feature description is required in load_metadata().
+Feature label is required in load_metadata().
+Features
+Filter
+Filter by AI provider.
+Filter by log type.
+Filter by Sentiment
+Filter by status.
+Filter by tokens: "gt:N", "lt:N", or "none".
+Filter by Toxicity
+Filter by user ID.
+Filter logs from this date (YYYY-MM-DD HH:MM:SS).
+Filter logs until this date (YYYY-MM-DD HH:MM:SS).
+For more information:
+Generate
+Generate Alt Text
+Generate alt text for this image.
+Generate and edit images using AI. Requires an AI connector that includes support for image generation models.
+Generate Image
+Generated alternative text for the image; may be empty when alt="" is correct.
+Generated excerpt.
+Generated image data.
+Generated meta description suggestion.
+Generated taxonomy term suggestions.
+Generated title suggestion.
+Generates a prompt from post content that can be used to generate an image
+Generates accessible alternative (alt) text for images using AI vision models, following common web accessibility guidance. Requires an AI connector that includes support for vision-based image analysis models.
+Generates excerpt suggestions from content. Requires an AI connector that includes support for text generation models.
+Generates meta description suggestions and integrates those with various SEO plugins. Requires an AI connector that includes support for text generation models.
+Generates title suggestions from content. Requires an AI connector that includes support for text generation models.
+Get post details
+Get the details of a post based on the post ID. Optionally, limit the details to specific fields.
+Get the post terms
+Get the terms of a post based on the post ID and optionally filter by taxonomy.
+Globally enable AI Features
+High
+High Toxicity (>=70%)
+How many times the term is used.
+How the term should be filtered.
+How to test:
+ID of the post being modified.
+ID of the post being reviewed.
+Image Generation
+Image Generation and Editing
+Image generation failed. Please ensure you have a connected provider that supports image generation.
+Image Prompt Generation
+Image prompt generation failed. Please ensure you have a connected provider that supports text generation.
+Image refinement failed. Please ensure you have a connected provider that supports image refinement, not just image generation.
+Imported image data.
+Imports a base64 encoded image into the media library
+Information about the model that generated the image.
+Information about the provider that generated the image.
+Input Data
+Input Schema
+Input Schema Reference
+Input validation failed.
+Insufficient permissions.
+Invalid Feature id returned by ::get_id().
+Invalid JSON input
+Invoke Ability
+Invoking ability...
+Log entry not found.
+Logs AI requests for observability and debugging. View detailed logs under Tools.
+Low
+Low Toxicity (<40%)
+Manage Connectors
+Manage Experiments
+Manage Features
+Maximum number of items per page.
+Maximum number of suggestions to generate.
+Maximum suggestions
+Medium
+Medium Toxicity (40%-69%)
+Meta Description Generation
+Meta description generation failed. Please ensure you have a connected provider that supports text generation.
+Music Generation
+Name
+Negative
+Neutral
+No ability specified.
+No base64 data found in the provided input.
+No excerpt suggestion was generated.
+No image data was generated.
+No image was generated.
+No Input Required
+No meta description suggestion was generated.
+No pending approval request matches the provided key.
+No prompt was generated.
+No resized content was generated.
+No summary was generated.
+No taxonomy suggestions were generated.
+No title suggestion was generated.
+Only suggest existing terms
+Optional base64-encoded image to use as a reference image for edits.
+Optional context about the image or surrounding content to improve alt text relevance.
+Optional meta data to save with the image.
+Optional surrounding content for context.
+Order sort attribute ascending or descending.
+Other
+Other Features
+Output Schema
+Overview
+Parent term name for hierarchical taxonomies.
+PHP version %1$s or higher is required. You are running PHP version %2$s.
+Plugin
+Plugin basename and connector ID are required.
+Plugins
+Positive
+Post content to generate a meta description for.
+Post not found.
+Post with ID %d not found.
+Prompt used to generate an image.
+Provider
+Provider Capabilities
+Providers
+Queued
+Raw Data
+Refinement generation failed. Please ensure you have a connected provider that supports text generation.
+Regenerate
+Require explicit administrator approval before plugins or themes can use AI connectors configured on this site. Note this is an experimental, proof-of-concept feature and as such, issues may be encountered. Feedback welcome and desired to help shape the feature.
+Result
+Review requests
+Review suggestions for the block.
+Review types to perform.
+RTL stylesheet "%1$s" is missing and will not be available.
+Search Abilities
+Search in operations, request previews, response previews, and error messages.
+Sentiment
+Settings
+Settings 鈫?Connectors
+Shorten, expand, or rephrase selected block content. Requires an AI connector that includes support for text generation models.
+Slug
+Sort collection by attribute.
+Speech Generation
+Structured metadata about how the image block is used, such as whether it is linked.
+Success!
+Successfully purged %d log entries.
+Suggest new terms based on context
+Summarization failed. Please ensure you have a connected provider that supports text generation.
+Summarizes long-form content into digestible overviews. Requires an AI connector that includes support for text generation models.
+Surrounding content to improve review relevance.
+Taxonomy "%s" does not exist.
+Taxonomy not found.
+Taxonomy strategy
+Term generation failed. Please ensure you have a connected provider that supports text generation.
+Test
+Test Ability
+Test Ability:
+Testing
+Text Generation
+Text to Speech
+The "%1$s" AI connector has not been approved for use by "%2$s".
+The %s class should not be cloned.
+The Abilities Explorer lets you browse every registered ability, inspect its schemas, and test it with custom input right from the admin.
+The alt text of the image.
+The analyzed comment ID.
+The attachment ID of the image to generate alt text for.
+The author of the post.
+The base64 encoded image data to import into the media library.
+The base64 encoded image data.
+The block content to resize.
+The block type, e.g. core/paragraph, core/heading.
+The character count of the description.
+The content of the block to refine.
+The content of the post.
+The content to use as inspiration for the generated image.
+The data is not a valid base64 encoded string.
+The data is not a valid image.
+The description of the image.
+The description of the term.
+The details of the post.
+The excerpt of the post.
+The feedback Notes to apply to the block.
+The fields to get the details of. Will default to all fields if not provided.
+The filename of the image.
+The group ID of the term.
+The ID of the comment to analyze.
+The ID of the post to get the details of.
+The ID of the post to get the terms of.
+The ID of the post to resize content for.
+The ID of the term.
+The image generation prompt.
+The key of the meta data.
+The length of the summary.
+The meta description suggestion.
+The meta description text.
+The MIME type of the image.
+The model ID.
+The model name.
+The name of the term.
+The parent ID of the term.
+The plain-text content of the block to review.
+The plugin assets are not built. This is most likely because you downloaded the plugin from the GitHub repository without building the assets. Please run `nvm use && npm ci && npm run build` to build the assets.
+The post ID to generate a meta description for. If provided without content, the post content will be used.
+The post title, used to avoid duplication in the generated description.
+The provider ID.
+The provider name.
+The provider type.
+The reference image is not valid base64-encoded data.
+The resized content.
+The resizing action to perform.
+The review type.
+The sentiment of the comment.
+The slug of the post.
+The slug of the term.
+The specified attachment is not an image.
+The suggested term name.
+The suggestion strategy: existing_only or allow_new.
+The suggestion text.
+The summary of the content.
+The taxonomy ID of the term.
+The taxonomy name of the term.
+The taxonomy to filter the terms by.
+The taxonomy to generate suggestions for (e.g., post_tag, category).
+The title of the image.
+The title of the post.
+The type of the post.
+The updated block content after applying feedback.
+The value of the meta data.
+Theme
+This ability does not accept any input parameters. Simply click "Invoke Ability" to execute it.
+This action will be removed in v1.0
+This comment is already being analyzed.
+This feature requires a valid AI Connector to function properly. Please set up a provider to use this feature in %s.
+This filter will be removed in v1.0
+This will be removed in v1.0
+Title Generation
+Title generation failed. Please ensure you have a connected provider that supports text generation.
+Total Abilities
+Toxicity
+Toxicity score from 0 (not toxic) to 1 (highly toxic).
+Unknown error occurred.
+Unsupported capability: %s
+URL or data URI of the image to generate alt text for. Used if attachment_id is not provided.
+Use "Validate Input" to check your JSON against the schema.
+User #%d
+Validate Input
+Various AI features and experiments.
+Video Generation
+View
+View Details
+View the results below
+Whether the image was determined to be decorative.
+Whether this is a new term or an existing one.
+WordPress AI
+WordPress AI failed to upgrade to %1$s. Migration version %2$s failed with the following error: %3$s. Please deactivate and reactivate the plugin to try again.
+WordPress Core
+WordPress version %s or higher is required.
+You can test any ability directly from this screen:
+You do not have permission to analyze comments.
+You do not have permission to edit this attachment.
+You do not have permission to generate alt text.
+You do not have permission to generate excerpts for this post.
+You do not have permission to generate excerpts.
+You do not have permission to generate image prompts.
+You do not have permission to generate images.
+You do not have permission to generate meta descriptions for this post.
+You do not have permission to generate meta descriptions.
+You do not have permission to generate taxonomy suggestions for this post.
+You do not have permission to generate taxonomy suggestions.
+You do not have permission to generate titles for this post.
+You do not have permission to generate titles.
+You do not have permission to import images.
+You do not have permission to resize content.
+You do not have permission to run AI refinements on this post.
+You do not have permission to run AI refinements.
+You do not have permission to run AI reviews on this post.
+You do not have permission to run AI reviews.
+You do not have permission to summarize content.
+You do not have permission to summarize this post.
+You do not have sufficient permissions to access this page.
+Your WordPress environment has AI functionality disabled. The AI plugin will not work until AI support is enabled.
