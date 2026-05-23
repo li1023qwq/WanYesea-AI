@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify tag matches plugin version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          PLUGIN_VERSION=$(grep -m1 'Version:' index.php | sed 's/.*Version:[[:space:]]*//')
+          if [ "$VERSION" != "$PLUGIN_VERSION" ]; then
+            echo "Tag version ($VERSION) does not match index.php Version ($PLUGIN_VERSION)."
+            exit 1
+          fi
+          echo "Version OK: $VERSION"
+
+      - name: Build plugin zip
+        run: |
+          mkdir -p dist/WanYesea-AI
+          rsync -a \
+            --exclude dist \
+            --exclude .git \
+            --exclude .github \
+            --exclude scripts \
+            . dist/WanYesea-AI/
+          (cd dist && zip -r WanYesea-AI.zip WanYesea-AI)
+          ls -lh dist/WanYesea-AI.zip
+
+      - name: Extract release notes from update_log.md
+        id: notes
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          BODY=""
+
+          if [ -f update_log.md ]; then
+            BODY=$(awk -v ver="$VERSION" '
+              $0 ~ "^## v" ver " " { found=1; next }
+              found && /^## v/ { exit }
+              found { print }
+            ' update_log.md)
+          fi
+
+          if [ -z "$BODY" ]; then
+            BODY="Release ${TAG}"
+          fi
+
+          {
+            echo "body<<EOF"
+            echo "$BODY"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WanYesea-AI ${{ github.ref_name }}
+          body: ${{ steps.notes.outputs.body }}
+          files: dist/WanYesea-AI.zip
+          draft: false
+          prerelease: false

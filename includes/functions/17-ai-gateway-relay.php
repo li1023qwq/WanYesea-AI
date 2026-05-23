@@ -752,6 +752,56 @@ final class Wanyesea_AI_Gateway_Text_Model extends AbstractOpenAiCompatibleTextG
         return new Wanyesea_AI_Gateway_Anthropic_Auth($auth->getApiKey());
     }
 
+    /**
+     * @param array<string, mixed>|null $outputSchema
+     * @return array<string, mixed>
+     */
+    protected function prepareResponseFormatParam(?array $outputSchema): array {
+        if (function_exists('wanyesea_ai_prepare_openai_compatible_response_format')) {
+            $provider_id = class_exists('Wanyesea_AI_Gateway_Settings', false)
+                ? Wanyesea_AI_Gateway_Settings::provider_id_for_slot($this->slot_id)
+                : '';
+
+            return wanyesea_ai_prepare_openai_compatible_response_format(
+                $outputSchema,
+                'structured_output',
+                $provider_id,
+                $this->metadata()->getId()
+            );
+        }
+
+        return parent::prepareResponseFormatParam($outputSchema);
+    }
+
+    /**
+     * 对齐 chuyi-ai-relay：规范化松散 JSON 回复（内容分类等）。
+     */
+    protected function parseResponseToGenerativeAiResult(Response $response): GenerativeAiResult {
+        if (function_exists('wanyesea_ai_normalize_openai_compatible_structured_json_response')) {
+            $response = wanyesea_ai_normalize_openai_compatible_structured_json_response($response);
+        }
+
+        return parent::parseResponseToGenerativeAiResult($response);
+    }
+
+    /**
+     * @param list<\WordPress\AiClient\Messages\DTO\Message> $prompt
+     * @return array<string, mixed>
+     */
+    protected function prepareGenerateTextParams(array $prompt): array {
+        $params = parent::prepareGenerateTextParams($prompt);
+
+        $provider_id = class_exists('Wanyesea_AI_Gateway_Settings', false)
+            ? Wanyesea_AI_Gateway_Settings::provider_id_for_slot($this->slot_id)
+            : '';
+        if (function_exists('wanyesea_ai_provider_prefers_json_object_response_format')
+            && wanyesea_ai_provider_prefers_json_object_response_format($provider_id, $this->metadata()->getId())) {
+            unset($params['response_format']);
+        }
+
+        return $params;
+    }
+
     protected function createRequest(HttpMethodEnum $method, string $path, array $headers = array(), $data = null): Request {
         if (Wanyesea_AI_Gateway_Settings::get_mode($this->slot_id) === Wanyesea_AI_Gateway_Settings::MODE_ANTHROPIC) {
             $headers['Content-Type'] = 'application/json';

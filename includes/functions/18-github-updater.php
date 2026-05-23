@@ -4,16 +4,9 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * GitHub Releases → WordPress 插件更新。
+ * GitHub Releases → WordPress 插件更新（固定仓库 li1023qwq/WanYesea-AI）。
  *
- * 启用方式（任选其一，优先级从高到低）：
- * 1. 过滤器 wanyesea_ai_github_updater_config（可填 api_url / releases_url / repo / token）
- * 2. wp-config.php：define('WANYESEA_AI_GITHUB_REPO', 'owner/repo');
- * 3. 环境变量：WANYESEA_AI_GITHUB_REPO=owner/repo
- * 4. 后台「更新日志 → GitHub 仓库」填写 owner/repo
- *
- * 私有仓库或提高 API 限额（可选）：
- * define('WANYESEA_AI_GITHUB_TOKEN', 'ghp_...');
+ * 可选：过滤器 wanyesea_ai_github_updater_config、WANYESEA_AI_GITHUB_TOKEN（私有仓库 / 提高 API 限额）。
  */
 final class Wanyesea_AI_Github_Updater {
 
@@ -32,7 +25,6 @@ final class Wanyesea_AI_Github_Updater {
         add_filter('pre_set_site_transient_update_plugins', array(__CLASS__, 'filter_update_transient'));
         add_filter('plugins_api', array(__CLASS__, 'filter_plugin_info'), 10, 3);
         add_filter('plugin_action_links_' . plugin_basename(WanYesea_AI_path . 'index.php'), array(__CLASS__, 'plugin_action_links'));
-        add_filter('csf_WanYesea_AI_save', array(__CLASS__, 'filter_csf_save'), 20, 2);
         add_action('admin_post_wanyesea_ai_check_github_update', array(__CLASS__, 'handle_check_update'));
         add_action('admin_notices', array(__CLASS__, 'render_admin_notice'));
     }
@@ -107,14 +99,6 @@ final class Wanyesea_AI_Github_Updater {
      * 更新页状态 HTML。
      */
     public static function get_status_panel_html() {
-        if (!self::is_enabled()) {
-            return '<div class="wya-github-update-panel wya-github-update-panel--off">'
-                . '<p class="muted-3-color em09" style="margin:0">'
-                . '未配置 GitHub 仓库。请填写 <code>owner/repo</code>，或在 <code>wp-config.php</code> 中定义 '
-                . '<code>WANYESEA_AI_GITHUB_REPO</code> 后，即可在「插件」页收到更新提示并一键升级。'
-                . '</p></div>';
-        }
-
         $cfg     = self::config();
         $current = Wanyesea_AI_Config::get_version();
         $release = self::get_release();
@@ -221,35 +205,6 @@ final class Wanyesea_AI_Github_Updater {
         return $info;
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    public static function filter_csf_save($data, $instance) {
-        unset($instance);
-        if (!is_array($data)) {
-            return $data;
-        }
-
-        $old = get_option('WanYesea_AI', array());
-        if (!is_array($old)) {
-            $old = array();
-        }
-
-        $old_repo = isset($old['github_repo']) ? self::normalize_repo_slug((string) $old['github_repo']) : '';
-        $new_repo = isset($data['github_repo']) ? self::normalize_repo_slug((string) $data['github_repo']) : $old_repo;
-
-        if ($new_repo !== $old_repo) {
-            self::clear_cache();
-        }
-
-        if (isset($data['github_repo'])) {
-            $data['github_repo'] = $new_repo;
-        }
-
-        return $data;
-    }
-
     public static function handle_check_update() {
         if (!current_user_can('update_plugins')) {
             wp_die(esc_html__('您没有权限执行此操作。'));
@@ -263,12 +218,7 @@ final class Wanyesea_AI_Github_Updater {
             'message' => '已检查 GitHub Release，当前已是最新版本。',
         );
 
-        if (!self::is_enabled()) {
-            $message = array(
-                'type'    => 'warning',
-                'message' => '未配置 GitHub 仓库（owner/repo），无法检查更新。',
-            );
-        } elseif ($release === null && self::get_release() === null) {
+        if ($release === null && self::get_release() === null) {
             $fail = (string) get_site_transient(self::CACHE_FAIL_KEY);
             if ($fail === 'not_found') {
                 $message = array(
@@ -456,25 +406,6 @@ final class Wanyesea_AI_Github_Updater {
     }
 
     private static function resolve_repo_slug() {
-        if (defined('WANYESEA_AI_GITHUB_REPO')) {
-            $constant = constant('WANYESEA_AI_GITHUB_REPO');
-            if (is_scalar($constant) && trim((string) $constant) !== '') {
-                return self::normalize_repo_slug((string) $constant);
-            }
-        }
-
-        $env = getenv('WANYESEA_AI_GITHUB_REPO');
-        if (is_string($env) && trim($env) !== '') {
-            return self::normalize_repo_slug($env);
-        }
-
-        if (function_exists('WanYesea_AI')) {
-            $from_option = self::normalize_repo_slug((string) WanYesea_AI('github_repo', ''));
-            if ($from_option !== '') {
-                return $from_option;
-            }
-        }
-
         return self::DEFAULT_REPO;
     }
 

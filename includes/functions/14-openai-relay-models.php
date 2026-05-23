@@ -287,16 +287,22 @@ function wanyesea_ai_register_relay_openai_provider() {
 add_action('init', 'wanyesea_ai_register_relay_openai_provider', 22);
 
 /**
- * 文本生成前预热：注册中转 Provider、刷新模型表、写入 Registry。
+ * 文本生成前预热：注册中转 Provider、写入 Registry。
+ *
+ * @param string $model_id       可选，额外预热指定模型。
+ * @param bool   $force_refresh  为 true 时强制 HTTP 刷新 /models（仅测试页等场景，编辑页勿用）。
  */
-function wanyesea_ai_prime_relay_openai_for_text_generation($model_id = '') {
+function wanyesea_ai_prime_relay_openai_for_text_generation($model_id = '', $force_refresh = false) {
     if (!wanyesea_ai_relay_is_provider_active('openai')) {
         return;
     }
 
     wanyesea_ai_register_relay_openai_provider();
-    wanyesea_ai_probe_models_classified_reset('openai');
-    wanyesea_ai_probe_model_ids_for_capability('openai', 'text', true);
+
+    if ($force_refresh) {
+        wanyesea_ai_probe_models_classified_reset('openai');
+        wanyesea_ai_probe_model_ids_for_capability('openai', 'text', true);
+    }
 
     if (!class_exists('WordPress\AiClient\AiClient')) {
         return;
@@ -308,16 +314,22 @@ function wanyesea_ai_prime_relay_openai_for_text_generation($model_id = '') {
             return;
         }
 
-        $registry->findProviderModelsMetadataForSupport(
-            'openai',
-            new WordPress\AiClient\Providers\Models\DTO\ModelRequirements(
-                array(CapabilityEnum::textGeneration()),
-                array()
-            )
-        );
+        if ($force_refresh) {
+            $registry->findProviderModelsMetadataForSupport(
+                'openai',
+                new WordPress\AiClient\Providers\Models\DTO\ModelRequirements(
+                    array(CapabilityEnum::textGeneration()),
+                    array()
+                )
+            );
+        }
 
         $model_id = wanyesea_ai_normalize_model_id($model_id);
         if ($model_id !== '') {
+            if (function_exists('wanyesea_ai_create_relay_openai_text_model_for_id')
+                && wanyesea_ai_create_relay_openai_text_model_for_id($model_id) !== null) {
+                return;
+            }
             $registry->getProviderModel('openai', $model_id);
         }
     } catch (Throwable $e) {
@@ -522,7 +534,7 @@ function wanyesea_ai_test_lab_generate_text($provider_id, $model_id, $prompt) {
     }
 
     if (function_exists('wanyesea_ai_prime_relay_openai_for_text_generation')) {
-        wanyesea_ai_prime_relay_openai_for_text_generation($model_id);
+        wanyesea_ai_prime_relay_openai_for_text_generation($model_id, true);
     }
 
     try {

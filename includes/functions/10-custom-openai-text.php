@@ -17,6 +17,7 @@ use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleModelMetadataDirectory;
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleTextGenerationModel;
+use WordPress\AiClient\Results\DTO\GenerativeAiResult;
 
 /**
  * 判断 OpenAI 兼容 /models 列表中的模型是否应跳过（非对话类）。
@@ -207,7 +208,124 @@ function wanyesea_ai_custom_provider_text_models_fallback_map($provider_id) {
         ),
     );
 
+    if ($provider_id === 'sensenova') {
+        foreach (array('deepseek-v4-flash') as $extra_id) {
+            if ($extra_id === $hint || isset($map[$extra_id])) {
+                continue;
+            }
+            $map[$extra_id] = new ModelMetadata(
+                $extra_id,
+                $extra_id,
+                array(CapabilityEnum::textGeneration(), CapabilityEnum::chatHistory()),
+                $options
+            );
+        }
+    }
+
     return apply_filters('wanyesea_ai_custom_provider_text_models_fallback_map', $map, $provider_id);
+}
+
+/**
+ * 自定义 Connector 的默认文本模型 ID（不触发 /models）。
+ */
+function wanyesea_ai_get_text_model_hint_for_provider($provider_id) {
+    $provider_id = sanitize_key((string) $provider_id);
+
+    if ($provider_id === '') {
+        return '';
+    }
+
+    if (class_exists('Wanyesea_AI_Custom_Connectors')) {
+        $defs = Wanyesea_AI_Custom_Connectors::definitions();
+        $def  = isset($defs[$provider_id]) && is_array($defs[$provider_id]) ? $defs[$provider_id] : array();
+        if (!empty($def['preferred_model_hint'])) {
+            return trim((string) $def['preferred_model_hint']);
+        }
+        if (!empty($def['default_model'])) {
+            return trim((string) $def['default_model']);
+        }
+    }
+
+    return $provider_id === 'sensenova' ? 'sensenova-6.7-flash-lite' : '';
+}
+
+/**
+ * 自定义 Connector 的 Provider 类名。
+ *
+ * @return class-string<Wanyesea_AI_Custom_Api_Provider_Base>|null
+ */
+function wanyesea_ai_custom_provider_class_for_id($provider_id) {
+    $provider_id = sanitize_key((string) $provider_id);
+
+    if (!class_exists('Wanyesea_AI_Custom_Ai_Providers')) {
+        return null;
+    }
+
+    foreach (Wanyesea_AI_Custom_Ai_Providers::provider_classes() as $class_name) {
+        if (!is_string($class_name) || !class_exists($class_name)) {
+            continue;
+        }
+        if ($class_name::providerId() === $provider_id) {
+            return $class_name;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * 用 hint / 所选模型 ID 构建自定义 Connector 文本模型并写入 Registry（不依赖 GET /models）。
+ *
+ * @return \WordPress\AiClient\Providers\Models\Contracts\ModelInterface|null
+ */
+function wanyesea_ai_create_custom_text_model_for_id($provider_id, $model_id) {
+    $provider_id = sanitize_key((string) $provider_id);
+    $model_id    = function_exists('wanyesea_ai_normalize_model_id')
+        ? wanyesea_ai_normalize_model_id($model_id)
+        : trim((string) $model_id);
+
+    if ($provider_id === '' || $model_id === ''
+        || wanyesea_ai_is_nvidia_nim_entity_extraction_model($model_id)) {
+        return null;
+    }
+
+    if (!class_exists('Wanyesea_AI_Custom_Connectors')
+        || !Wanyesea_AI_Custom_Connectors::is_custom_provider($provider_id)) {
+        return null;
+    }
+
+    $provider_class = wanyesea_ai_custom_provider_class_for_id($provider_id);
+    if ($provider_class === null || !class_exists('Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model')) {
+        return null;
+    }
+
+    try {
+        $options = wanyesea_ai_openai_compatible_chat_text_model_options(
+            function_exists('wanyesea_ai_custom_provider_supports_vision_input')
+                && wanyesea_ai_custom_provider_supports_vision_input($provider_id)
+        );
+
+        $metadata = new ModelMetadata(
+            $model_id,
+            $model_id,
+            array(CapabilityEnum::textGeneration(), CapabilityEnum::chatHistory()),
+            $options
+        );
+
+        $model = new Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model(
+            $metadata,
+            $provider_class::metadata(),
+            $provider_class
+        );
+
+        if (class_exists('WordPress\AiClient\AiClient')) {
+            WordPress\AiClient\AiClient::defaultRegistry()->bindModelDependencies($model);
+        }
+
+        return $model;
+    } catch (Throwable $e) {
+        return null;
+    }
 }
 
 /**
@@ -231,6 +349,9 @@ function wanyesea_ai_openai_compatible_chat_text_model_options($include_image_in
         new SupportedOption(OptionEnum::stopSequences()),
         new SupportedOption(OptionEnum::inputModalities(), $input_modalities),
         new SupportedOption(OptionEnum::outputModalities(), array(array(ModalityEnum::text()))),
+        // 内容分类 / 编辑建议等 as_json_response() 能力校验所需（OpenAI 兼容 chat/completions + response_format）。
+        new SupportedOption(OptionEnum::outputMimeType()),
+        new SupportedOption(OptionEnum::outputSchema()),
     );
 }
 
@@ -357,6 +478,34 @@ function wanyesea_ai_parse_openai_compatible_models_payload($response_data) {
 }
 
 /**
+ * 从 hint 静态表构建 [[provider, model], ...]（不发起 HTTP /models）。
+ *
+ * @return list<array{0: string, 1: string}>
+ */
+function wanyesea_ai_hints_only_text_model_preferences($provider_id) {
+    $provider_id = sanitize_key((string) $provider_id);
+    if ($provider_id === '' || !function_exists('wanyesea_ai_custom_provider_text_models_fallback_map')) {
+        return array();
+    }
+
+    $pairs = array();
+    foreach (array_keys(wanyesea_ai_custom_provider_text_models_fallback_map($provider_id)) as $model_id) {
+        if ($model_id !== '') {
+            $pairs[] = array($provider_id, $model_id);
+        }
+    }
+
+    return $pairs;
+}
+
+/**
+ * 文本 Ability REST 执行中是否应跳过 GET /models 探测。
+ */
+function wanyesea_ai_text_ability_should_skip_models_discovery() {
+    return !empty($GLOBALS['wanyesea_ai_text_ability_running']);
+}
+
+/**
  * 从 /models 响应中解析端点声明的默认模型 ID（中转网关常见字段）。
  *
  * @param array<string, mixed> $response_data
@@ -422,6 +571,13 @@ function wanyesea_ai_rank_custom_text_model_ids($provider_id, array $model_ids, 
 function wanyesea_ai_discover_custom_provider_text_model_ids($provider_id) {
     $provider_id = sanitize_key((string) $provider_id);
 
+    if (wanyesea_ai_text_ability_should_skip_models_discovery()) {
+        $pairs = wanyesea_ai_hints_only_text_model_preferences($provider_id);
+        return array_map(static function ($pair) {
+            return $pair[1];
+        }, $pairs);
+    }
+
     if (!class_exists(AiClient::class) || wanyesea_ai_get_custom_connector_api_key_resolved($provider_id) === '') {
         return array();
     }
@@ -470,6 +626,11 @@ function wanyesea_ai_discover_custom_provider_text_model_ids($provider_id) {
  */
 function wanyesea_ai_get_custom_provider_text_model_preferences($provider_id) {
     $provider_id = sanitize_key((string) $provider_id);
+
+    if (wanyesea_ai_text_ability_should_skip_models_discovery()) {
+        return wanyesea_ai_hints_only_text_model_preferences($provider_id);
+    }
+
     $model_ids   = wanyesea_ai_discover_custom_provider_text_model_ids($provider_id);
 
     if ($model_ids === array()) {
@@ -599,6 +760,16 @@ final class Wanyesea_AI_OpenAi_Compatible_Model_Metadata_Directory extends Abstr
      * @return array<string, ModelMetadata>
      */
     protected function sendListModelsRequest(): array {
+        if (!empty($GLOBALS['wanyesea_ai_text_ability_running'])
+            && function_exists('wanyesea_ai_custom_provider_text_models_fallback_map')
+            && function_exists('wanyesea_ai_get_connector_api_key_resolved')
+            && wanyesea_ai_get_connector_api_key_resolved($this->provider_id) !== '') {
+            $text_fallback = wanyesea_ai_custom_provider_text_models_fallback_map($this->provider_id);
+            if ($text_fallback !== array()) {
+                return $text_fallback;
+            }
+        }
+
         if (function_exists('wanyesea_ai_editor_ai_image_flow_is_active')
             && wanyesea_ai_editor_ai_image_flow_is_active()) {
             if (function_exists('wanyesea_ai_custom_provider_models_fallback_map')
@@ -739,6 +910,229 @@ final class Wanyesea_AI_OpenAi_Compatible_Model_Metadata_Directory extends Abstr
 }
 
 /**
+ * 从助手回复中提取 JSON（含 ```json 代码块）。
+ */
+function wanyesea_ai_extract_json_payload_from_text($content) {
+    $content = trim((string) $content);
+    if ($content === '') {
+        return '';
+    }
+
+    if (preg_match('/```(?:json)?\s*([\s\S]*?)\s*```/i', $content, $matches)) {
+        $content = trim($matches[1]);
+    }
+
+    if ($content !== '' && ($content[0] === '{' || $content[0] === '[')) {
+        return $content;
+    }
+
+    $object_pos = strpos($content, '{');
+    $array_pos  = strpos($content, '[');
+    $start      = false;
+    if ($object_pos !== false && $array_pos !== false) {
+        $start = min($object_pos, $array_pos);
+    } elseif ($object_pos !== false) {
+        $start = $object_pos;
+    } elseif ($array_pos !== false) {
+        $start = $array_pos;
+    }
+
+    if ($start === false) {
+        return '';
+    }
+
+    $candidate  = trim(substr($content, $start));
+    $last_object = strrpos($candidate, '}');
+    $last_array  = strrpos($candidate, ']');
+    $end         = false;
+    if ($last_object !== false && $last_array !== false) {
+        $end = max($last_object, $last_array);
+    } elseif ($last_object !== false) {
+        $end = $last_object;
+    } elseif ($last_array !== false) {
+        $end = $last_array;
+    }
+
+    return $end === false ? '' : trim(substr($candidate, 0, $end + 1));
+}
+
+/**
+ * 判断 JSON 列表是否为内容分类的 suggestions 条目。
+ *
+ * @param array<mixed> $items
+ */
+function wanyesea_ai_looks_like_taxonomy_suggestions_list(array $items) {
+    if ($items === array()) {
+        return false;
+    }
+
+    foreach ($items as $item) {
+        if (!is_array($item) || empty($item['term'])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * 将松散 JSON 规范为 Ability 期望格式（参考 chuyi-ai-relay ChuyiRelayTextGenerationModel）。
+ */
+function wanyesea_ai_normalize_structured_json_text($content) {
+    $content = trim((string) $content);
+    if ($content === '') {
+        return $content;
+    }
+
+    $json = wanyesea_ai_extract_json_payload_from_text($content);
+    if ($json === '') {
+        return $content;
+    }
+
+    $decoded = json_decode($json, true);
+    if (!is_array($decoded)) {
+        return $content;
+    }
+
+    if (array_is_list($decoded) && wanyesea_ai_looks_like_taxonomy_suggestions_list($decoded)) {
+        $encoded = wp_json_encode(array('suggestions' => $decoded), JSON_UNESCAPED_UNICODE);
+
+        return is_string($encoded) ? $encoded : $content;
+    }
+
+    if (isset($decoded['suggestions']) && is_array($decoded['suggestions'])) {
+        $encoded = wp_json_encode($decoded, JSON_UNESCAPED_UNICODE);
+
+        return is_string($encoded) ? $encoded : $content;
+    }
+
+    return $json;
+}
+
+/**
+ * 规范化 chat/completions 结构化 JSON 回复（SenseNova 常返回数组或 markdown 包裹的 JSON）。
+ */
+function wanyesea_ai_normalize_openai_compatible_structured_json_response(Response $response) {
+    $response_data = $response->getData();
+    if (!is_array($response_data) || empty($response_data['choices']) || !is_array($response_data['choices'])) {
+        return $response;
+    }
+
+    $changed = false;
+    foreach ($response_data['choices'] as $index => $choice) {
+        if (!is_array($choice) || empty($choice['message']) || !is_array($choice['message'])) {
+            continue;
+        }
+
+        $message_content = isset($choice['message']['content']) && is_string($choice['message']['content'])
+            ? trim($choice['message']['content'])
+            : '';
+        if ($message_content === '') {
+            continue;
+        }
+
+        $normalized = wanyesea_ai_normalize_structured_json_text($message_content);
+        if ($normalized !== $message_content) {
+            $response_data['choices'][$index]['message']['content'] = $normalized;
+            $changed = true;
+        }
+    }
+
+    if (!$changed) {
+        return $response;
+    }
+
+    $body = wp_json_encode($response_data);
+
+    return is_string($body)
+        ? new Response($response->getStatusCode(), $response->getHeaders(), $body)
+        : $response;
+}
+
+/**
+ * 是否对该厂商/模型使用 json_object 而非 json_schema（避免 SenseNova guided_grammar / tokenizer 报错）。
+ */
+function wanyesea_ai_provider_prefers_json_object_response_format($provider_id, $model_id = '') {
+    $provider_id = sanitize_key((string) $provider_id);
+    $model_id    = strtolower(trim((string) $model_id));
+
+    if ($provider_id === 'sensenova') {
+        return true;
+    }
+
+    if ($model_id !== ''
+        && (strpos($model_id, 'sensenova') !== false || strpos($model_id, 'qwen') !== false)) {
+        return true;
+    }
+
+    return (bool) apply_filters('wanyesea_ai_provider_prefers_json_object_response_format', false, $provider_id, $model_id);
+}
+
+/**
+ * 将 ModelConfig 中的 outputSchema 转为 SenseNova / OpenAI 结构化输出所需的 response_format。
+ * WordPress AI Client 传入的是裸 JSON Schema（无 name）；商汤等平台要求 json_schema.name。
+ * SenseNova（Qwen 系）不支持 json_schema 的 guided_grammar，须回退 json_object。
+ *
+ * @param array<string, mixed>|null $output_schema
+ * @param string                    $fallback_name
+ * @param string                    $provider_id
+ * @param string                    $model_id
+ * @return array<string, mixed>
+ */
+function wanyesea_ai_prepare_openai_compatible_response_format(
+    ?array $output_schema,
+    $fallback_name = 'structured_output',
+    $provider_id = '',
+    $model_id = ''
+) {
+    if (wanyesea_ai_provider_prefers_json_object_response_format($provider_id, $model_id)) {
+        return array('type' => 'json_object');
+    }
+
+    if (!is_array($output_schema) || $output_schema === array()) {
+        return array('type' => 'json_object');
+    }
+
+    if (isset($output_schema['name'], $output_schema['schema']) && is_array($output_schema['schema'])) {
+        $envelope = $output_schema;
+        if (!isset($envelope['strict'])) {
+            $envelope['strict'] = false;
+        }
+
+        return array(
+            'type'        => 'json_schema',
+            'json_schema' => $envelope,
+        );
+    }
+
+    $name = is_string($fallback_name) ? trim($fallback_name) : 'structured_output';
+    if ($name === '' && isset($output_schema['title']) && is_string($output_schema['title'])) {
+        $name = trim($output_schema['title']);
+    }
+    if ($name === '' && isset($output_schema['properties']['suggestions'])) {
+        $name = 'taxonomy_suggestions';
+    }
+    if ($name === '') {
+        $name = 'structured_output';
+    }
+
+    $name = preg_replace('/[^a-zA-Z0-9_]/', '_', $name);
+    $name = substr((string) $name, 0, 64);
+    if ($name === '') {
+        $name = 'structured_output';
+    }
+
+    return array(
+        'type'        => 'json_schema',
+        'json_schema' => array(
+            'name'   => $name,
+            'strict' => false,
+            'schema' => $output_schema,
+        ),
+    );
+}
+
+/**
  * OpenAI 兼容 chat/completions 文本生成模型。
  */
 final class Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model extends AbstractOpenAiCompatibleTextGenerationModel {
@@ -765,6 +1159,34 @@ final class Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model extends Abstract
     }
 
     /**
+     * SenseNova：json_object；其它厂商：json_schema + name（核心 SDK 仅传入裸 schema）。
+     *
+     * @param array<string, mixed>|null $outputSchema
+     * @return array<string, mixed>
+     */
+    protected function prepareResponseFormatParam(?array $outputSchema): array {
+        $provider_id = is_string($this->provider_class) && method_exists($this->provider_class, 'providerId')
+            ? sanitize_key((string) call_user_func(array($this->provider_class, 'providerId')))
+            : '';
+
+        return wanyesea_ai_prepare_openai_compatible_response_format(
+            $outputSchema,
+            'structured_output',
+            $provider_id,
+            $this->metadata()->getId()
+        );
+    }
+
+    /**
+     * 对齐 chuyi-ai-relay：规范化 SenseNova 等返回的松散 JSON，避免内容分类解析失败。
+     */
+    protected function parseResponseToGenerativeAiResult(Response $response): GenerativeAiResult {
+        return parent::parseResponseToGenerativeAiResult(
+            wanyesea_ai_normalize_openai_compatible_structured_json_response($response)
+        );
+    }
+
+    /**
      * NVIDIA GLiNER-PII：仅最后一条 user 消息、content 为纯字符串，省略对话类采样参数。
      *
      * @param list<\WordPress\AiClient\Messages\DTO\Message> $prompt
@@ -772,6 +1194,13 @@ final class Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model extends Abstract
      */
     protected function prepareGenerateTextParams(array $prompt): array {
         $params = parent::prepareGenerateTextParams($prompt);
+
+        $provider_id = is_string($this->provider_class) && method_exists($this->provider_class, 'providerId')
+            ? sanitize_key((string) call_user_func(array($this->provider_class, 'providerId')))
+            : '';
+        if (wanyesea_ai_provider_prefers_json_object_response_format($provider_id, $this->metadata()->getId())) {
+            unset($params['response_format']);
+        }
 
         if (!wanyesea_ai_is_nvidia_nim_entity_extraction_model($this->metadata()->getId())) {
             return $params;
@@ -879,6 +1308,11 @@ function wanyesea_ai_get_custom_provider_text_model_preferences_cached($provider
         return $cache[$provider_id];
     }
 
+    if (wanyesea_ai_text_ability_should_skip_models_discovery()) {
+        $cache[$provider_id] = wanyesea_ai_hints_only_text_model_preferences($provider_id);
+        return $cache[$provider_id];
+    }
+
     $pairs = wanyesea_ai_get_custom_provider_text_model_preferences($provider_id);
 
     if ($pairs === array() && function_exists('wanyesea_ai_get_custom_connector_api_key_resolved')
@@ -943,3 +1377,48 @@ function wanyesea_ai_prepend_custom_text_models($preferred_models) {
 }
 
 add_filter('wpai_preferred_text_models', 'wanyesea_ai_prepend_custom_text_models', 20);
+
+/**
+ * 仅保留已配置密钥或 Registry 可用的文本模型，避免「仅 SenseNova」时仍优先尝试未连接的官方厂商。
+ *
+ * @param array<int, array{0: string, 1: string}> $preferred_models
+ * @return array<int, array{0: string, 1: string}>
+ */
+function wanyesea_ai_filter_wpai_preferred_text_models_to_configured($preferred_models) {
+    if (!is_array($preferred_models) || $preferred_models === array()) {
+        return is_array($preferred_models) ? $preferred_models : array();
+    }
+
+    $filtered = array();
+
+    foreach ($preferred_models as $pair) {
+        if (!is_array($pair) || !isset($pair[0], $pair[1]) || $pair[1] === '') {
+            continue;
+        }
+
+        $provider_id = sanitize_key((string) $pair[0]);
+        if ($provider_id === '') {
+            continue;
+        }
+
+        $has_key = function_exists('wanyesea_ai_get_connector_api_key_resolved')
+            && wanyesea_ai_get_connector_api_key_resolved($provider_id) !== '';
+
+        $registry_ok = false;
+        if (!$has_key
+            && function_exists('wanyesea_ai_is_provider_registry_configured')
+            && !wanyesea_ai_text_ability_should_skip_models_discovery()) {
+            $registry_ok = wanyesea_ai_is_provider_registry_configured($provider_id);
+        }
+
+        if (!$has_key && !$registry_ok) {
+            continue;
+        }
+
+        $filtered[] = array($provider_id, (string) $pair[1]);
+    }
+
+    return $filtered !== array() ? $filtered : $preferred_models;
+}
+
+add_filter('wpai_preferred_text_models', 'wanyesea_ai_filter_wpai_preferred_text_models_to_configured', 99);

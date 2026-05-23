@@ -25,4 +25,11 @@ if (Test-Path $zipPath) {
 Compress-Archive -Path $stageDir -DestinationPath $zipPath -Force
 
 Write-Host "Release zip: $zipPath"
-Write-Host "Upload this file to GitHub Release assets (tag e.g. v1.2.2)."
+Write-Host ""
+Write-Host "GitHub Actions (recommended):"
+Write-Host "  1. Bump Version in index.php + update_log.md"
+Write-Host "  2. git add . ; git commit -m ""vX.Y.Z: summary"" ; git push"
+Write-Host "  3. git tag vX.Y.Z ; git push origin vX.Y.Z"
+Write-Host "     -> workflow .github/workflows/release.yml builds zip and publishes Release"
+Write-Host ""
+Write-Host "Manual: upload dist/WanYesea-AI.zip to GitHub Release assets."
