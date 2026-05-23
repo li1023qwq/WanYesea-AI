@@ -26,27 +26,21 @@
 
 ## Screenshots
 
-Save admin screenshots as **PNG** (≈1280px wide) under `assets/screenshots/`, then commit.
-
-| Page | File |
-|------|------|
-| AI Connect | `assets/screenshots/ai-connect.png` |
-| Unified Gateway | `assets/screenshots/ai-gateway.png` |
-| Test Lab | `assets/screenshots/ai-test-lab.png` |
-
-### AI Connect
-
-![AI Connect settings](assets/screenshots/ai-connect.png)
-
-### Unified Gateway
-
-![Unified AI Gateway](assets/screenshots/ai-gateway.png)
-
-### Test Lab
-
-![WanYesea AI Test Lab](assets/screenshots/ai-test-lab.png)
-
-> If the SVG banner renders poorly on GitHub, export it as `assets/readme-banner.png` and update the top image path in the README.
+![晚夜深秋-AI测试](assets/screenshots/20260521195621410-ScreenShot_2026-05-21_195239_833.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214129249-image-103.png)
+![晚夜深秋-AI测试](assets/screenshots/20260521195621444-ScreenShot_2026-05-21_195350_307.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214242480-image-105.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214418532-image-106.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125213_040.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125327_096.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125357_551.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_130659_436.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_161958_616.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_163029_744.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_163915_065.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_165514_449.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_170638_499.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_174312_796.png)
 
 ## Requirements
 
