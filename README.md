@@ -8,7 +8,7 @@
 
 **[ English ](./README.en.md)**
 
-<img src="assets/readme-banner.svg" alt="WanYesea-AI" width="100%" />
+![WanYesea-AI](assets/readme-banner.svg)
 
 **晚夜深秋·AI 插件（WanYesea-AI）** 面向 [WordPress 7.0 官方 AI 生态](https://github.com/WordPress/ai)，在子比主题后台提供统一的 AI 连接、API 中转与网关管理能力。你可以在插件内配置各厂商 API Key 与中转 Base URL，并自动同步至 **Connectors**；同时支持将 One API / New API 等站点注册为独立 Provider，供文本、视觉与出图实验功能调用。
 
@@ -23,6 +23,25 @@
 - 「晚夜深秋-AI测试」文本 / 图像链路验证与环境检测。
 - 官方 `ai` 插件界面汉化（707 条词条，DOM 动态替换）。
 - GitHub Releases 自动更新（仓库 [li1023qwq/WanYesea-AI](https://github.com/li1023qwq/WanYesea-AI)）。
+
+## 截图
+
+### AI 连接
+![晚夜深秋-AI测试](assets/screenshots/20260521195621410-ScreenShot_2026-05-21_195239_833.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214129249-image-103.png)
+![晚夜深秋-AI测试](assets/screenshots/20260521195621444-ScreenShot_2026-05-21_195350_307.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214242480-image-105.png)
+![晚夜深秋-AI测试](assets/screenshots/20260522214418532-image-106.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125213_040.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125327_096.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_125357_551.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_130659_436.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_161958_616.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_163029_744.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_163915_065.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_165514_449.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_170638_499.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_174312_796.png)
 
 ## 环境要求
 

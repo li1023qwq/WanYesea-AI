@@ -8,7 +8,7 @@
 
 **[ 简体中文 ](./README.md)**
 
-<img src="assets/readme-banner.svg" alt="WanYesea-AI" width="100%" />
+![WanYesea-AI](assets/readme-banner.svg)
 
 **WanYesea-AI** extends the [WordPress 7.0 AI stack](https://github.com/WordPress/ai) with a Zibll-theme admin panel for AI connectivity, API relay, and unified gateway management. Configure vendor API keys and relay base URLs in one place—they sync to **Connectors** automatically. Register One API / New API endpoints as first-class providers for text, vision, and image-generation experiments.
 
@@ -23,6 +23,30 @@
 - Built-in text / image test lab and environment probes.
 - Runtime zh_CN overlay for the official `ai` plugin (707 strings, DOM mutation observer).
 - GitHub Releases auto-update ([li1023qwq/WanYesea-AI](https://github.com/li1023qwq/WanYesea-AI)).
+
+## Screenshots
+
+Save admin screenshots as **PNG** (≈1280px wide) under `assets/screenshots/`, then commit.
+
+| Page | File |
+|------|------|
+| AI Connect | `assets/screenshots/ai-connect.png` |
+| Unified Gateway | `assets/screenshots/ai-gateway.png` |
+| Test Lab | `assets/screenshots/ai-test-lab.png` |
+
+### AI Connect
+
+![AI Connect settings](assets/screenshots/ai-connect.png)
+
+### Unified Gateway
+
+![Unified AI Gateway](assets/screenshots/ai-gateway.png)
+
+### Test Lab
+
+![WanYesea AI Test Lab](assets/screenshots/ai-test-lab.png)
+
+> If the SVG banner renders poorly on GitHub, export it as `assets/readme-banner.png` and update the top image path in the README.
 
 ## Requirements
 
