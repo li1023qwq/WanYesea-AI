@@ -162,11 +162,13 @@ git push origin v1.2.4
 
 推送 `v*` 标签后，GitHub Actions 自动打包 Release。WordPress 站点在 **插件** 页收到更新提示。
 
-本地手动打包：
+本地手动打包（遵循 `.distignore`，不含 README、截图目录、汉化构建脚本等）：
 
 ```powershell
 .\scripts\build-release.ps1
 ```
+
+排除规则在插件根目录 **`.distignore`**，可自行增删；修改后本地脚本与 GitHub Actions 均生效。
 
 ## 常见问题
 

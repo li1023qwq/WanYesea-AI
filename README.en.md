@@ -162,11 +162,13 @@ git push origin v1.2.4
 
 Pushing a `v*` tag triggers GitHub Actions to build the Release. Sites update from **Plugins → Updates**.
 
-Local zip (optional):
+Local zip (respects `.distignore`; omits README, screenshots, i18n build scripts, etc.):
 
 ```powershell
 .\scripts\build-release.ps1
 ```
+
+Edit **`.distignore`** at the plugin root to add or remove excluded paths.
 
 ## FAQ
 

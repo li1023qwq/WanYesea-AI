@@ -1,0 +1,27 @@
+# Release 打包排除列表（GitHub Actions rsync + scripts/build-release.ps1）
+# 每行一条路径，相对插件根目录；# 开头为注释
+
+# 构建 / 版本控制 / CI
+dist
+.git
+.github
+scripts
+.distignore
+
+# 仓库文档（仅 GitHub 展示，站点无需）
+README.md
+README.en.md
+assets/readme-banner.svg
+assets/screenshots
+
+# 汉化词条开发产物（运行时仅需 ai-zh-cn-strings.php）
+includes/i18n/build-ai-zh-cn.py
+includes/i18n/_extracted-ai-strings.txt
+
+# 编辑器 / 本地工具（若存在）
+.editorconfig
+.gitattributes
+.gitignore
+.cursor
+.vscode
+*.code-workspace

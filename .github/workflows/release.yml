@@ -30,13 +30,12 @@ jobs:
         run: |
           mkdir -p dist/WanYesea-AI
           rsync -a \
-            --exclude dist \
-            --exclude .git \
-            --exclude .github \
-            --exclude scripts \
+            --exclude-from=.distignore \
             . dist/WanYesea-AI/
           (cd dist && zip -r WanYesea-AI.zip WanYesea-AI)
           ls -lh dist/WanYesea-AI.zip
+          echo "Excluded paths (from .distignore):"
+          grep -v '^\s*#' .distignore | grep -v '^\s*$' || true
 
       - name: Extract release notes from update_log.md
         id: notes
