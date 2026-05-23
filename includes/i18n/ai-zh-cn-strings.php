@@ -1,7 +1,7 @@
 <?php
 /**
  * WordPress 官方 AI 插件（text domain: ai）中文词条表。
- * 基于 chuyi-ai-relay 运行时翻译表维护（DOM + gettext + wp.i18n）。
+ * 运行时中文翻译表（DOM + gettext + wp.i18n）。
  *
  * @return array<string, string>
  */

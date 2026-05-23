@@ -5,7 +5,7 @@
 
 ### 改进
 
-- **界面汉化重做**：对齐 chuyi-ai-relay 运行时方案（gettext / gettext_with_context + wp.i18n.setLocaleData + DOM MutationObserver），词条表扩至 707 条
+- **界面汉化重做**：运行时翻译（gettext / gettext_with_context + wp.i18n.setLocaleData + DOM MutationObserver），词条表扩至 707 条
 - **GitHub 更新**：移除后台自定义仓库字段，固定 `li1023qwq/WanYesea-AI`；推送 `v*` 标签由 Actions 自动打包 Release
 - **修复**：内容分类（分类项建议）与编辑建议等文本 Ability 执行前预热 AI Registry，避免误报「请确认已连接支持文本生成的提供商」
 - **修复**：内容分类「约 150 词」门槛对中文正文误判（`wp.wordcount` 按空格分词）；中文站点按约 300 字等效启用建议按钮，并更新提示文案
@@ -16,7 +16,7 @@
 - **修复**：内容分类 REST `504` / `rest_ability_invalid_method`——文本 Ability 执行期间跳过 GET `/models` 与 Registry 元数据全量探测；编辑页 `apiFetch` 中间件对 `ai/*/run` 强制 POST
 - **修复**：内容分类 `prompt_client_error` / `model is not found`（HTTP 404）——校验「设置 → AI」文本实验开发者选项，自动剔除出图模型（如 `sensenova-u1-fast`）与未配置厂商，并回退到 `sensenova-6.7-flash-lite` 等 hint 文本模型
 - **修复**：内容分类 `json_schema.name is required`（HTTP 400）——OpenAI 兼容文本模型发送结构化输出时补全 `response_format.json_schema.name` / `schema` 信封（SenseNova 要求）
-- **修复**：内容分类 `guided_grammar` / `Unsupported tokenizer`（HTTP 400）——SenseNova（Qwen 系）不再发送 `response_format`（避免 grammar 编译）；参考 chuyi-ai-relay 在 `parseResponseToGenerativeAiResult` 中规范化松散 JSON（`[{term,confidence}]` → `{"suggestions":[...]}`、剥离 markdown 代码块）
+- **修复**：内容分类 `guided_grammar` / `Unsupported tokenizer`（HTTP 400）——SenseNova（Qwen 系）不再发送 `response_format`（避免 grammar 编译）；在 `parseResponseToGenerativeAiResult` 中规范化松散 JSON（`[{term,confidence}]` → `{"suggestions":[...]}`、剥离 markdown 代码块）
 - **改进**：编辑建议界面与内容中文化——补全「已添加 N 条建议」等词条；中文站点为 `ai/editorial-notes` 等追加「与正文同语言」系统指令；Notes 保存/REST 返回时将 `[READABILITY]` 等标签汉化为 `[可读性]`（含历史数据与去重兼容）；DOM 脚本作兜底
 
 ## v1.2.2 (2026-05-23)

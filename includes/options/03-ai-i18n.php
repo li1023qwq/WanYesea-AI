@@ -18,7 +18,7 @@ CSF::createSection($prefix, array(
             'style'   => 'info',
             'content' => '<div class="wya-i18n-hero">
                 <h3 class="wya-i18n-hero__title"><i class="fa fa-language fa-fw"></i>WordPress AI 界面汉化</h3>
-                <p>官方 <code>ai</code> 插件目前尚无完整中文语言包。开启后，本插件通过 <strong>gettext + wp.i18n + DOM 动态替换</strong>（参考 chuyi-ai-relay 方案）翻译「<a href="' . esc_url($ai_settings_url) . '">设置 → AI</a>」、区块编辑器 AI 工具等界面，覆盖 React 动态渲染的英文文案。</p>
+                <p>官方 <code>ai</code> 插件目前尚无完整中文语言包。开启后，本插件通过 <strong>gettext + wp.i18n + DOM 动态替换</strong>翻译「<a href="' . esc_url($ai_settings_url) . '">设置 → AI</a>」、区块编辑器 AI 工具等界面，覆盖 React 动态渲染的英文文案。</p>
                 <p class="muted-3-color em09">词条表见 <code>includes/i18n/ai-zh-cn-strings.php</code>（707 条）。官方发布语言包后可在下方关闭本功能。</p>
                 <ul class="wya-i18n-hero__links">
                     <li>当前界面语言：<code>' . esc_html($locale_label) . '</code>' . ($zh_site ? '（已识别为中文，可启用汉化）' : '（非中文环境时本功能不生效）') . '</li>

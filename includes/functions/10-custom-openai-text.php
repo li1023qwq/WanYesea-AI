@@ -976,7 +976,7 @@ function wanyesea_ai_looks_like_taxonomy_suggestions_list(array $items) {
 }
 
 /**
- * 将松散 JSON 规范为 Ability 期望格式（参考 chuyi-ai-relay ChuyiRelayTextGenerationModel）。
+ * 将松散 JSON 规范为 Ability 期望格式。
  */
 function wanyesea_ai_normalize_structured_json_text($content) {
     $content = trim((string) $content);
@@ -1178,7 +1178,7 @@ final class Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model extends Abstract
     }
 
     /**
-     * 对齐 chuyi-ai-relay：规范化 SenseNova 等返回的松散 JSON，避免内容分类解析失败。
+     * 规范化 SenseNova 等返回的松散 JSON，避免内容分类解析失败。
      */
     protected function parseResponseToGenerativeAiResult(Response $response): GenerativeAiResult {
         return parent::parseResponseToGenerativeAiResult(

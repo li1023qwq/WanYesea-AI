@@ -774,7 +774,7 @@ final class Wanyesea_AI_Gateway_Text_Model extends AbstractOpenAiCompatibleTextG
     }
 
     /**
-     * 对齐 chuyi-ai-relay：规范化松散 JSON 回复（内容分类等）。
+     * 规范化松散 JSON 回复（内容分类等）。
      */
     protected function parseResponseToGenerativeAiResult(Response $response): GenerativeAiResult {
         if (function_exists('wanyesea_ai_normalize_openai_compatible_structured_json_response')) {
