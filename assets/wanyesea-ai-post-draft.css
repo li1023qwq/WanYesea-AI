@@ -1,0 +1,145 @@
+.wanyesea-ai-post-draft-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 100100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: rgba(15, 23, 42, 0.45);
+}
+
+.wanyesea-ai-post-draft-dialog {
+	width: min(560px, 100%);
+	max-height: calc(100vh - 48px);
+	overflow: auto;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.wanyesea-ai-post-draft-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	background: linear-gradient(102deg, #0f766e 0%, #155e75 100%);
+}
+
+.wanyesea-ai-post-draft-header h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.wanyesea-ai-post-draft-close {
+	border: 0;
+	background: transparent;
+	color: #fff;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 4px;
+}
+
+.wanyesea-ai-post-draft-body {
+	padding: 20px;
+}
+
+.wanyesea-ai-post-draft-body label {
+	display: block;
+	margin: 12px 0 6px;
+	font-weight: 600;
+}
+
+.wanyesea-ai-post-draft-body textarea,
+.wanyesea-ai-post-draft-body select,
+.wanyesea-ai-post-draft-body input[type="text"] {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.wanyesea-ai-post-draft-count-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.wanyesea-ai-post-draft-count-row .small-text {
+	width: 72px;
+}
+
+.wanyesea-ai-post-draft-count-hint,
+.wanyesea-ai-post-draft-help {
+	margin: 4px 0 0;
+	font-size: 12px;
+	color: #646970;
+	line-height: 1.5;
+}
+
+.wanyesea-ai-post-draft-help {
+	margin-bottom: 8px;
+}
+
+.wanyesea-ai-post-draft-model-fields {
+	margin-bottom: 4px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.wanyesea-ai-post-draft-model-row {
+	display: flex;
+	gap: 8px;
+	align-items: stretch;
+}
+
+.wanyesea-ai-post-draft-model-row select {
+	flex: 1;
+	min-width: 0;
+}
+
+.wanyesea-ai-post-draft-model-row .button {
+	flex-shrink: 0;
+	align-self: stretch;
+	white-space: nowrap;
+}
+
+.wanyesea-ai-post-draft-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.wanyesea-ai-post-draft-message {
+	margin-bottom: 12px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.wanyesea-ai-post-draft-message.is-info {
+	background: #eff6ff;
+	color: #1e40af;
+}
+
+.wanyesea-ai-post-draft-message.is-success {
+	background: #ecfdf5;
+	color: #065f46;
+}
+
+.wanyesea-ai-post-draft-message.is-error {
+	background: #fef2f2;
+	color: #991b1b;
+}
+
+body.wanyesea-ai-post-draft-modal-open {
+	overflow: hidden;
+}
+
+#wanyesea-ai-post-draft-btn {
+	margin-left: 4px;
+}

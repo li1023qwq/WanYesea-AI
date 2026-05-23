@@ -1,0 +1,132 @@
+.wanyesea-ai-comment-reply-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 100100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: rgba(15, 23, 42, 0.45);
+}
+
+.wanyesea-ai-comment-reply-dialog {
+	width: min(560px, 100%);
+	max-height: calc(100vh - 48px);
+	overflow: auto;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.wanyesea-ai-comment-reply-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	background: linear-gradient(102deg, #1d4ed8 0%, #4338ca 100%);
+}
+
+.wanyesea-ai-comment-reply-header h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.wanyesea-ai-comment-reply-close {
+	border: 0;
+	background: transparent;
+	color: #fff;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 4px;
+}
+
+.wanyesea-ai-comment-reply-body {
+	padding: 20px;
+}
+
+.wanyesea-ai-comment-reply-body label {
+	display: block;
+	margin: 12px 0 6px;
+	font-weight: 600;
+}
+
+.wanyesea-ai-comment-reply-body textarea,
+.wanyesea-ai-comment-reply-body select,
+.wanyesea-ai-comment-reply-body input[type="text"] {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.wanyesea-ai-comment-reply-model-fields {
+	margin-bottom: 4px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.wanyesea-ai-comment-reply-model-row {
+	display: flex;
+	gap: 8px;
+	align-items: stretch;
+}
+
+.wanyesea-ai-comment-reply-model-row select {
+	flex: 1;
+	min-width: 0;
+}
+
+.wanyesea-ai-comment-reply-model-row .button {
+	flex-shrink: 0;
+	align-self: stretch;
+	white-space: nowrap;
+}
+
+.wanyesea-ai-comment-reply-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.wanyesea-ai-comment-reply-message {
+	margin-bottom: 12px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.wanyesea-ai-comment-reply-message.is-error {
+	background: #fef2f2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
+.wanyesea-ai-comment-reply-message.is-success {
+	background: #ecfdf5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+}
+
+.wanyesea-ai-comment-reply-message.is-info {
+	background: #eff6ff;
+	color: #1e40af;
+	border: 1px solid #bfdbfe;
+}
+
+body.wanyesea-ai-comment-reply-modal-open {
+	overflow: hidden;
+}
+
+.wanyesea-ai-comment-reply-badge {
+	cursor: default;
+}
+
+.wanyesea-ai-comment-reply-error {
+	color: #b32d2e;
+	font-weight: 600;
+}

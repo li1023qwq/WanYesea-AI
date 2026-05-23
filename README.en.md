@@ -2,7 +2,7 @@
 
 [![WordPress](https://img.shields.io/badge/WordPress-7.0%2B-21759B?logo=wordpress&logoColor=white)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Version](https://img.shields.io/badge/version-1.2.3-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
+[![Version](https://img.shields.io/badge/version-1.2.4-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
 [![WordPress AI](https://img.shields.io/badge/WordPress%20AI-Connectors-155e75)](https://github.com/WordPress/ai)
 [![Release](https://img.shields.io/github/actions/workflow/status/li1023qwq/WanYesea-AI/release.yml?label=release)](https://github.com/li1023qwq/WanYesea-AI/actions)
 
@@ -134,10 +134,10 @@ Pattern: `WANYESEA_AI_{PROVIDER}_API_KEY` (uppercase provider ID with underscore
 
 ```bash
 git add .
-git commit -m "v1.2.3: summary"
+git commit -m "v1.2.4: AI post draft and AI comment reply"
 git push
-git tag v1.2.3
-git push origin v1.2.3
+git tag v1.2.4
+git push origin v1.2.4
 ```
 
 Pushing a `v*` tag triggers GitHub Actions to build the Release. Sites update from **Plugins → Updates**.
