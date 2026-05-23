@@ -23,6 +23,8 @@
 - Built-in text / image test lab and environment probes.
 - Runtime zh_CN overlay for the official `ai` plugin (707 strings, DOM mutation observer).
 - GitHub Releases auto-update ([li1023qwq/WanYesea-AI](https://github.com/li1023qwq/WanYesea-AI)).
+- **AI post draft**: batch-generate Zibll-formatted drafts from **Posts → All Posts → AI Draft**; async background generation with optional AI notice on the frontend.
+- **AI comment reply**: auto-reply after comment approval using post context; skip Zibll quick-reply phrases and custom blocklist; optional AI badge in comments.
 
 ## Screenshots
 
@@ -41,6 +43,10 @@
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_165514_449.png)
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_170638_499.png)
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_174312_796.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_192723_697.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191156_575.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191401_506.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191431_802.png)
 
 ## Requirements
 
@@ -77,6 +83,18 @@ Under **Unified AI Gateway**, add One API / New API sites, fetch models, and tag
 
 Under **Interface i18n**, enable the zh_CN overlay for the AI admin UI.
 
+### 6. AI post draft (v1.2.4+)
+
+1. Configure the frontend AI notice under **WanYesea-AI → AI Draft** (optional).
+2. Open **Posts → All Posts**, click **AI Draft**, enter prompt/keywords and pick a model.
+3. Submit and leave the page—drafts are generated asynchronously in the background.
+
+### 7. AI comment reply (v1.2.4+)
+
+1. Enable auto-reply under **WanYesea-AI → AI Comment Reply**; set author identity and block rules.
+2. After a comment is approved, the plugin replies asynchronously as the post author (or a chosen user).
+3. Zibll quick-reply phrases and custom blocklist are skipped; use **AI Reply** in the admin comment list for manual retries.
+
 ## Admin sections
 
 | Section | Description |
@@ -85,6 +103,8 @@ Under **Interface i18n**, enable the zh_CN overlay for the AI admin UI.
 | AI Connect | Vendor relay, keys, Connectors sync |
 | Unified AI Gateway | Multi-gateway providers and model pools |
 | Interface i18n | zh_CN overlay toggle |
+| AI Draft | Batch Zibll post drafts, frontend AI notice |
+| AI Comment Reply | Auto/manual replies, quick-reply blocklist |
 | AI Test Lab | Text / image tests |
 | Backup & Import | Export / restore settings |
 | Changelog | Version history and GitHub updates |
