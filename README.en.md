@@ -41,6 +41,10 @@
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_165514_449.png)
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_170638_499.png)
 ![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_174312_796.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_192723_697.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191156_575.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191401_506.png)
+![晚夜深秋-AI测试](assets/screenshots/ScreenShot_2026-05-23_191431_802.png)
 
 ## Requirements
 
