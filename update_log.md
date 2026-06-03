@@ -1,6 +1,30 @@
 # 晚夜深秋·AI插件 更新日志
 
 
+## v1.2.5 (2026-06-03)
+
+### 新增
+
+- **子比主题 AI SEO 适配**（`23-zib-ai-seo-compat.php`）：一次 AI 请求批量生成自定义 SEO 标题、关键词、描述（JSON），避免原主题连续三次请求导致仅标题成功
+- 遍历已配置文本模型：OpenAI 中转、自定义 Connector、统一网关、`wpai_preferred_text_models` 及 WordPress「设置 → 连接」已连接厂商；直连 `chat/completions` 与 `wp_ai_client_prompt`（含 JSON Schema）双路径回退
+- 批量失败时按字段回退子比原生 `zib_ai_seo_run_field`；与 **WanYesea-API** REST `ai-seo/generate` 共用 `wanyesea_ai_generate_zib_seo_all()`
+
+### 修复
+
+- **RequestAuthenticationInterface instance not set**：中转元数据目录与 OpenAI 兼容文本模型支持 Registry 鉴权回退；`wanyesea_ai_ensure_ai_client_auth` 每请求仅注册一次中转 Provider，后续仅重新注入鉴权（不再反复清空静态缓存）
+- **`wp_ai_client_before_generate_result`**：发请求前对当前模型执行 `bindModelDependencies` 并绑定 HTTP 传输器
+- 子比 `ai_seo_generate` AJAX 由本插件接管（移除 `nopriv` 未登录入口）；补充权限校验
+
+### 改进
+
+- SEO 批量生成期间复用文本 Ability 出站 HTTP 超时延长（`wanyesea_ai_text_ability_running`）
+- 过滤器：`wanyesea_ai_zib_seo_model_pairs`、`wanyesea_ai_zib_seo_max_tokens`、`wanyesea_ai_zib_seo_request_timeout`、`wanyesea_ai_zib_seo_max_execution_time`
+
+### 依赖说明
+
+- 需 **WordPress 7.0+** 与官方 **AI** 插件（`wp-content/plugins/ai`）
+- 子比 **8.9+** 且开启「独立 SEO 字段」与「AI SEO」（`ai_seo_s`）
+
 ## v1.2.4 (2026-05-23)
 
 ### 新增

@@ -4,7 +4,9 @@ if (!defined('ABSPATH')) {
 }
 
 use WordPress\AiClient\AiClient;
+use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
+use WordPress\AiClient\Providers\Http\Contracts\RequestAuthenticationInterface;
 use WordPress\AiClient\Providers\Http\DTO\Request;
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Http\DTO\Response;
@@ -1146,6 +1148,23 @@ final class Wanyesea_AI_OpenAi_Compatible_Text_Generation_Model extends Abstract
     public function __construct($model_metadata, $provider_metadata, $provider_class) {
         parent::__construct($model_metadata, $provider_metadata);
         $this->provider_class = $provider_class;
+    }
+
+    public function getRequestAuthentication(): RequestAuthenticationInterface {
+        try {
+            return parent::getRequestAuthentication();
+        } catch (RuntimeException $e) {
+            if (!function_exists('wanyesea_ai_get_registry_provider_request_authentication')) {
+                throw $e;
+            }
+
+            $auth = wanyesea_ai_get_registry_provider_request_authentication(
+                $this->providerMetadata()->getId()
+            );
+            $this->setRequestAuthentication($auth);
+
+            return $auth;
+        }
     }
 
     protected function createRequest(HttpMethodEnum $method, string $path, array $headers = array(), $data = null): Request {

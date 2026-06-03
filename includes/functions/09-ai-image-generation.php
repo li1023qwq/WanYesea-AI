@@ -12,12 +12,66 @@ use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
 use WordPress\AiClient\Providers\Models\Enums\OptionEnum;
 
 /**
+ * 将 Registry 中的鉴权重新绑定到当前 OpenAI 中转 Provider 运行时实例（不清理静态缓存）。
+ */
+function wanyesea_ai_rebind_openai_provider_runtime_auth() {
+    if (!function_exists('wanyesea_ai_relay_is_provider_active') || !wanyesea_ai_relay_is_provider_active('openai')) {
+        return;
+    }
+    if (!class_exists(AiClient::class) || !class_exists('Wanyesea_AI_Relay_OpenAi_Provider')) {
+        return;
+    }
+
+    try {
+        $registry = AiClient::defaultRegistry();
+        if (!$registry->hasProvider('openai')) {
+            return;
+        }
+
+        $auth = $registry->getProviderRequestAuthentication('openai');
+        if (!$auth instanceof \WordPress\AiClient\Providers\Http\Contracts\RequestAuthenticationInterface) {
+            return;
+        }
+
+        $directory = Wanyesea_AI_Relay_OpenAi_Provider::modelMetadataDirectory();
+        if ($directory instanceof \WordPress\AiClient\Providers\Http\Contracts\WithRequestAuthenticationInterface) {
+            $directory->setRequestAuthentication($auth);
+        }
+
+        $availability = Wanyesea_AI_Relay_OpenAi_Provider::availability();
+        if ($availability instanceof \WordPress\AiClient\Providers\Http\Contracts\WithRequestAuthenticationInterface) {
+            $availability->setRequestAuthentication($auth);
+        }
+    } catch (Throwable $e) {
+        return;
+    }
+}
+
+/**
+ * 重新注入连接页/自定义/网关鉴权（不触发中转 Provider 静态缓存清理）。
+ */
+function wanyesea_ai_reinject_ai_client_auth() {
+    if (function_exists('wanyesea_ai_inject_custom_provider_auth')) {
+        wanyesea_ai_inject_custom_provider_auth();
+    }
+    if (class_exists('Wanyesea_AI_Connectors')) {
+        Wanyesea_AI_Connectors::inject_ai_client_auth();
+    }
+    if (function_exists('wanyesea_ai_inject_gateway_provider_auth')) {
+        wanyesea_ai_inject_gateway_provider_auth();
+    }
+    wanyesea_ai_rebind_openai_provider_runtime_auth();
+}
+
+/**
  * 注入本插件与 Connectors 的 AI Client 鉴权（幂等，供出图与就绪检测提前调用）。
  */
 function wanyesea_ai_ensure_ai_client_auth() {
-    static $done = false;
-    if (!$done) {
-        $done = true;
+    static $bootstrapped = false;
+    static $relay_registered = false;
+
+    if (!$bootstrapped) {
+        $bootstrapped = true;
 
         if (function_exists('wanyesea_ai_inject_custom_provider_auth')) {
             wanyesea_ai_inject_custom_provider_auth();
@@ -31,12 +85,17 @@ function wanyesea_ai_ensure_ai_client_auth() {
         if (function_exists('wanyesea_ai_wrap_relay_official_metadata_directories')) {
             wanyesea_ai_wrap_relay_official_metadata_directories();
         }
+    } else {
+        wanyesea_ai_reinject_ai_client_auth();
     }
 
-    // 每次调用都重新注册，避免其他 init 钩子再次覆盖 openai 为官方 Provider。
-    if (function_exists('wanyesea_ai_register_relay_openai_provider')) {
+    if (!$relay_registered && function_exists('wanyesea_ai_register_relay_openai_provider')) {
+        $relay_registered = true;
         wanyesea_ai_register_relay_openai_provider();
+        return;
     }
+
+    wanyesea_ai_rebind_openai_provider_runtime_auth();
 }
 
 add_action('init', 'wanyesea_ai_ensure_ai_client_auth', 19);

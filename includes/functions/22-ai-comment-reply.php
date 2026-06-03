@@ -14,7 +14,7 @@ const WANYESEA_AI_COMMENT_REPLY_AGENT          = 'WanYesea-AI-Comment-Reply';
  * 功能总开关。
  */
 function wanyesea_ai_comment_reply_enabled() {
-    return wanyesea_ai_switcher_on('comment_reply_enabled', true);
+    return wanyesea_ai_switcher_on('comment_reply_enabled', false);
 }
 
 /**

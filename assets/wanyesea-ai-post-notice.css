@@ -30,7 +30,16 @@
 @media (max-width: 767px) {
     .wanyesea-ai-legal-row {
         flex-direction: column;
-        gap: 12px;
+        flex-wrap: nowrap;
+        gap: 8px;
+        justify-content: flex-start;
+        align-items: stretch;
+        margin-top: 8px;
+    }
+
+    .wanyesea-ai-legal-row > .em09.muted-3-color:not(.wanyesea-ai-post-notice),
+    .wanyesea-ai-legal-row > .wanyesea-ai-post-notice {
+        flex: 0 0 auto;
     }
 
     .wanyesea-ai-legal-row > .wanyesea-ai-post-notice {

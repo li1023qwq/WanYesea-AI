@@ -3,7 +3,7 @@
  * Plugin Name: 晚夜深秋·AI插件
  * Plugin URI: https://github.com/li1023qwq/WanYesea-AI
  * Description: WordPress 7.0 AI 连接与 API 中转：在本插件配置 API Key 并同步至 Connectors，支持 One API / New API 等网关出站。
- * Version: 1.2.4
+ * Version: 1.2.5
  * Requires at least: 7.0
  * Requires PHP: 7.4
  * Author: 晚夜深秋

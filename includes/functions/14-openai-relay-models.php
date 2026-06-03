@@ -76,6 +76,48 @@ if (class_exists('WordPress\OpenAiAiProvider\Provider\OpenAiProvider')
  * 中转网关常返回 openai/gpt-4o、deepseek-chat 等 ID，导致 Registry 无法匹配文本能力。
  * 本类在保留官方元数据的前提下，合并 HTTP /models 探测到的对话模型。
  */
+
+/**
+ * 从 AI Client Registry（或连接页密钥）解析厂商鉴权，供中转元数据目录/模型在实例未绑定时回退。
+ *
+ * @throws RuntimeException
+ */
+function wanyesea_ai_get_registry_provider_request_authentication($provider_id) {
+    $provider_id = sanitize_key((string) $provider_id);
+    if ($provider_id === '' || !class_exists('WordPress\AiClient\AiClient')) {
+        throw new RuntimeException(
+            'RequestAuthenticationInterface instance not set. Make sure you use the AiClient class for all requests.'
+        );
+    }
+
+    if (function_exists('wanyesea_ai_ensure_ai_client_auth')) {
+        wanyesea_ai_ensure_ai_client_auth();
+    }
+
+    try {
+        $registry = WordPress\AiClient\AiClient::defaultRegistry();
+        if ($registry->hasProvider($provider_id)) {
+            $auth = $registry->getProviderRequestAuthentication($provider_id);
+            if ($auth instanceof RequestAuthenticationInterface) {
+                return $auth;
+            }
+        }
+    } catch (Throwable $e) {
+        // fall through
+    }
+
+    if (function_exists('wanyesea_ai_get_connector_api_key_resolved')) {
+        $key = wanyesea_ai_get_connector_api_key_resolved($provider_id);
+        if ($key !== '') {
+            return new WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication($key);
+        }
+    }
+
+    throw new RuntimeException(
+        'RequestAuthenticationInterface instance not set. Make sure you use the AiClient class for all requests.'
+    );
+}
+
 final class Wanyesea_AI_Relay_Official_Model_Metadata_Directory implements
     ModelMetadataDirectoryInterface,
     WithHttpTransporterInterface,
@@ -86,6 +128,9 @@ final class Wanyesea_AI_Relay_Official_Model_Metadata_Directory implements
 
     /** @var string */
     private $provider_id;
+
+    /** @var RequestAuthenticationInterface|null */
+    private $request_authentication = null;
 
     /** @var array<string, array<string, ModelMetadata>> */
     private static $merged_map_cache = array();
@@ -143,18 +188,29 @@ final class Wanyesea_AI_Relay_Official_Model_Metadata_Directory implements
     }
 
     public function setRequestAuthentication(RequestAuthenticationInterface $requestAuthentication): void {
+        $this->request_authentication = $requestAuthentication;
         if ($this->inner instanceof WithRequestAuthenticationInterface) {
             $this->inner->setRequestAuthentication($requestAuthentication);
         }
     }
 
     public function getRequestAuthentication(): RequestAuthenticationInterface {
-        if ($this->inner instanceof WithRequestAuthenticationInterface) {
-            return $this->inner->getRequestAuthentication();
+        if ($this->request_authentication instanceof RequestAuthenticationInterface) {
+            return $this->request_authentication;
         }
-        throw new RuntimeException(
-            'RequestAuthenticationInterface instance not set. Make sure you use the AiClient class for all requests.'
-        );
+
+        if ($this->inner instanceof WithRequestAuthenticationInterface) {
+            try {
+                return $this->inner->getRequestAuthentication();
+            } catch (RuntimeException $e) {
+                // Provider 静态缓存刷新后 inner 可能尚未注入鉴权，回退 Registry。
+            }
+        }
+
+        $auth = wanyesea_ai_get_registry_provider_request_authentication($this->provider_id);
+        $this->setRequestAuthentication($auth);
+
+        return $auth;
     }
 
     /**

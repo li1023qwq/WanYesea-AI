@@ -2,7 +2,7 @@
 
 [![WordPress](https://img.shields.io/badge/WordPress-7.0%2B-21759B?logo=wordpress&logoColor=white)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Version](https://img.shields.io/badge/version-1.2.4-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
+[![Version](https://img.shields.io/badge/version-1.2.5-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
 [![WordPress AI](https://img.shields.io/badge/WordPress%20AI-Connectors-155e75)](https://github.com/WordPress/ai)
 [![Release](https://img.shields.io/github/actions/workflow/status/li1023qwq/WanYesea-AI/release.yml?label=release)](https://github.com/li1023qwq/WanYesea-AI/actions)
 
@@ -94,6 +94,10 @@
 1. 在 **晚夜深秋·AI插件 → AI 评论回复** 中启用自动回复，并配置回复身份、屏蔽规则。
 2. 读者评论过审后，系统将异步以文章作者（或指定用户）身份自动回复。
 3. 子比「快捷回复」与自定义屏蔽语句会自动跳过；后台评论列表可手动 **AI 回复** 或查看失败原因。
+
+### 8. 子比 AI SEO（v1.2.5+）
+
+在子比主题开启 **独立 SEO 字段** 与 **AI SEO** 后，文章/分类编辑页的「AI 生成 SEO」由本插件增强：一次请求生成标题、关键词、描述，并兼容中转 OpenAI、自定义 Connector、统一网关及 WordPress 连接页已配置厂商。若安装 **WanYesea-API**，移动端可通过 REST `ai-seo/generate` 调用同一逻辑。
 
 ## 后台菜单
 

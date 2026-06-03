@@ -2,7 +2,7 @@
 
 [![WordPress](https://img.shields.io/badge/WordPress-7.0%2B-21759B?logo=wordpress&logoColor=white)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Version](https://img.shields.io/badge/version-1.2.4-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
+[![Version](https://img.shields.io/badge/version-1.2.5-0f766e)](https://github.com/li1023qwq/WanYesea-AI/releases)
 [![WordPress AI](https://img.shields.io/badge/WordPress%20AI-Connectors-155e75)](https://github.com/WordPress/ai)
 [![Release](https://img.shields.io/github/actions/workflow/status/li1023qwq/WanYesea-AI/release.yml?label=release)](https://github.com/li1023qwq/WanYesea-AI/actions)
 
@@ -94,6 +94,10 @@ Under **Interface i18n**, enable the zh_CN overlay for the AI admin UI.
 1. Enable auto-reply under **WanYesea-AI → AI Comment Reply**; set author identity and block rules.
 2. After a comment is approved, the plugin replies asynchronously as the post author (or a chosen user).
 3. Zibll quick-reply phrases and custom blocklist are skipped; use **AI Reply** in the admin comment list for manual retries.
+
+### 8. Zibll AI SEO (v1.2.5+)
+
+With the Zibll theme’s **custom SEO fields** and **AI SEO** enabled, **Generate SEO with AI** on post/term edit screens is enhanced by this plugin: one request produces title, keywords, and description (JSON batch), compatible with OpenAI relay, custom Connectors, the unified gateway, and providers configured on WordPress **Settings → Connectors**. If **WanYesea-API** is installed, mobile apps can use the same logic via REST `ai-seo/generate`.
 
 ## Admin sections
 

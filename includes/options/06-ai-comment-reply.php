@@ -15,7 +15,7 @@ CSF::createSection(
                 'style'   => 'info',
                 'content' => '<div class="wya-comment-reply-hero">
                     <h3 class="wya-comment-reply-hero__title"><i class="fa fa-comments-o fa-fw"></i>AI 评论回复</h3>
-                    <p><strong>默认自动回复：</strong>读者在子比文章评论区发表评论并过审后，系统会异步根据文章内容生成个性化回复并发布（无需管理员手动操作）。</p>
+                    <p><strong>开启后自动回复：</strong>读者在子比文章评论区发表评论并过审后，系统会异步根据文章内容生成个性化回复并发布（无需管理员手动操作）。</p>
                     <p class="muted-3-color em09">后台「评论」列表的 <strong>AI 回复</strong> 按钮仅用于手动补发；子比「快捷回复」及下方自定义屏蔽语句将自动跳过。</p>
                 </div>',
             ),
@@ -24,7 +24,7 @@ CSF::createSection(
                 'type'     => 'switcher',
                 'title'    => '启用 AI 评论回复',
                 'subtitle' => '开启后，读者评论过审将自动触发 AI 回复',
-                'default'  => true,
+                'default'  => false,
             ),
             array(
                 'dependency' => array('comment_reply_enabled', '!=', ''),
